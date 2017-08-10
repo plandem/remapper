@@ -35,7 +35,7 @@ func newSliceMapper(dataType reflect.Type, normalizedType reflect.Type, options 
                 fieldName := strconv.FormatInt(int64(fieldIndex), 10)
                 m.fields[NameMapper(fieldName)] = &mapperField{
                     id:        fieldIndex,
-                    convert:   Convert,
+                    convert:   ValueConverter,
                     reverseId: -1,
                 }
             }
@@ -47,7 +47,7 @@ func newSliceMapper(dataType reflect.Type, normalizedType reflect.Type, options 
                     fieldName := fieldNames.Index(fieldIndex).Interface().(string)
                     m.fields[NameMapper(fieldName)] = &mapperField{
                         id:        fieldIndex,
-                        convert:   Convert,
+                        convert:   ValueConverter,
                         reverseId: -1,
                     }
                 }

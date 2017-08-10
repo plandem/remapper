@@ -16,7 +16,7 @@ func newMapMapper(dataType reflect.Type, normalizedType reflect.Type, names []st
     for fieldIndex, fieldName := range names {
         m.fields[NameMapper(fieldName)] = &mapperField{
             id:        fieldIndex,
-            convert:   Convert,
+            convert:   ValueConverter,
             reverseId: -1,
         }
     }

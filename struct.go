@@ -18,7 +18,7 @@ func newStructMapper(dataType reflect.Type, normalizedType reflect.Type) (mapper
     for i, i_max := 0, normalizedType.NumField(); i < i_max; i++ {
         m.fields[NameMapper(normalizedType.Field(i).Name)] = &mapperField{
             id:        i,
-            convert:   Convert,
+            convert:   ValueConverter,
             reverseId: -1,
         }
     }

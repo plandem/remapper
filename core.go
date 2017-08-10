@@ -14,6 +14,9 @@ var (
 
     // NameMapper is the function used to convert name of fields. The default mapper converts field names to lower case.
     NameMapper func(string) string = strings.ToLower
+
+    // ValueConverter is default converter for primitive values
+    ValueConverter ConvertFunc = Convert
 )
 
 type mapperTypeI interface {
