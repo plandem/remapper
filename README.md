@@ -20,15 +20,8 @@ type MyStruct struct {
 }
 
 func main() {
-
     //named-typed-slice and struct with tags
-    mapper, err := remapper.New(&MyStruct{}, []string{}, "db", []string{
-        "int_val",
-        "uint_val",
-        "str_val",
-        "float_val",
-        "bool_val",
-    })
+    mapper, err := remapper.New(&MyStruct{}, remapper.Slice([]string{}, []string{"int_val","uint_val","str_val","float_val","bool_val"}), "db")
 
     if err != nil {
         panic(err)
@@ -50,19 +43,14 @@ func main() {
     log.Printf("arr: %+v, error: %v", arr, err)
 
     //named-untyped-slice and struct with manual mapping
-    mapper, err = remapper.New(&MyStruct{}, []interface{}{}, map[string]string{
+    mapper, err = remapper.New(&MyStruct{}, remapper.Slice([]interface{}{}, []string{"int_val","uint_val","str_val","float_val","bool_val"}), map[string]string{
         "IntVal":   "int_val",
         "UintVal":  "uint_val",
         "StrVal":   "str_val",
         "FloatVal": "float_val",
         "BoolVal":  "bool_val",
-    }, []string{
-        "int_val",
-        "uint_val",
-        "str_val",
-        "float_val",
-        "bool_val",
     })
+    
     if err != nil {
         panic(err)
     }
