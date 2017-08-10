@@ -65,6 +65,7 @@ func New(args ...interface{})(*Mapper, error) {
     return m, nil
 }
 
+//Slice returns option to setup slice mapper
 func Slice(t interface{}, options interface{})(option) {
     return func(m *Mapper)(error) {
         normalizedType, err := resolveType(t, reflect.Slice)
