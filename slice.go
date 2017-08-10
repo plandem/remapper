@@ -72,14 +72,14 @@ func (m *SliceMapper) create() (reflect.Value, error) {
 }
 
 // sets a value to a slice at i index
-func (m *SliceMapper) set(to reflect.Value, i int, value reflect.Value) {
+func (m *SliceMapper) set(to reflect.Value, i int, name string, value reflect.Value) {
     if i < to.Len() {
         to.Index(i).Set(value)
     }
 }
 
 // gets a value from a slice at i index
-func (m *SliceMapper) get(from reflect.Value, i int) (reflect.Value) {
+func (m *SliceMapper) get(from reflect.Value, i int, name string) (reflect.Value) {
     if i < from.Len() {
         return from.Index(i)
     }

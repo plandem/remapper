@@ -527,18 +527,18 @@ func TestCustomTagArrayNameByName(t *testing.T) {
     assert.Equal(t, "floatval", reverseName)
 }
 
-func testMapperIget(t *testing.T, mapper mapperType, target reflect.Value, i int, value interface{}) {
+func testMapperIget(t *testing.T, mapper mapperType, target reflect.Value, i int, n string, value interface{}) {
     target = reflect.Indirect(target)
 
-    val := mapper.get(target, i)
+    val := mapper.get(target, i, n)
     require.NotNil(t, val)
     assert.Equal(t, true, val.IsValid())
     assert.Equal(t, value, val.Interface())
 }
 
-func testMapperIset(t *testing.T, mapper mapperType, target reflect.Value, i int, value interface{}) {
+func testMapperIset(t *testing.T, mapper mapperType, target reflect.Value, i int, n string, value interface{}) {
     target = reflect.Indirect(target)
-    mapper.set(target, i, reflect.ValueOf(value))
+    mapper.set(target, i, n, reflect.ValueOf(value))
 }
 
 func testMapperIcreate(t *testing.T, mapper mapperType) {
@@ -547,3 +547,52 @@ func testMapperIcreate(t *testing.T, mapper mapperType) {
     require.NotNil(t, result)
     assert.IsType(t, mapper.dataType, reflect.TypeOf(result))
 }
+
+func testMapperIuntyped(t *testing.T, mapper mapperType, target reflect.Value) {
+    testMapperIcreate(t, mapper)
+
+    testMapperIget(t, mapper, target, 0, "IntVal", int(0))
+    testMapperIset(t, mapper, target, 0, "IntVal", int(-1))
+    testMapperIget(t, mapper, target, 0, "IntVal", int(-1))
+
+    testMapperIget(t, mapper, target, 1, "UintVal", uint(0))
+    testMapperIset(t, mapper, target, 1, "UintVal", uint(100))
+    testMapperIget(t, mapper, target, 1, "UintVal", uint(100))
+
+    testMapperIget(t, mapper, target, 2, "StrVal", "")
+    testMapperIset(t, mapper, target, 2, "StrVal", "test string")
+    testMapperIget(t, mapper, target, 2, "StrVal", "test string")
+
+    testMapperIget(t, mapper, target, 3, "FloatVal", 0.0)
+    testMapperIset(t, mapper, target, 3, "FloatVal", 1.2345)
+    testMapperIget(t, mapper, target, 3, "FloatVal", 1.2345)
+
+    testMapperIget(t, mapper, target, 4, "BoolVal", false)
+    testMapperIset(t, mapper, target, 4, "BoolVal", true)
+    testMapperIget(t, mapper, target, 4, "BoolVal", true)
+}
+
+func testMapperItyped(t *testing.T, mapper mapperType, target reflect.Value) {
+    testMapperIcreate(t, mapper)
+
+    testMapperIget(t, mapper, target, 0, "IntVal", "")
+    testMapperIset(t, mapper, target, 0, "IntVal", "-1")
+    testMapperIget(t, mapper, target, 0, "IntVal", "-1")
+
+    testMapperIget(t, mapper, target, 1, "UintVal", "")
+    testMapperIset(t, mapper, target, 1, "UintVal", "100")
+    testMapperIget(t, mapper, target, 1, "UintVal", "100")
+
+    testMapperIget(t, mapper, target, 2, "StrVal", "")
+    testMapperIset(t, mapper, target, 2, "StrVal", "test string")
+    testMapperIget(t, mapper, target, 2, "StrVal", "test string")
+
+    testMapperIget(t, mapper, target, 3, "FloatVal", "")
+    testMapperIset(t, mapper, target, 3, "FloatVal", "1.2345")
+    testMapperIget(t, mapper, target, 3, "FloatVal", "1.2345")
+
+    testMapperIget(t, mapper, target, 4, "BoolVal","")
+    testMapperIset(t, mapper, target, 4, "BoolVal", "true")
+    testMapperIget(t, mapper, target, 4, "BoolVal", "true")
+}
+

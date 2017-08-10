@@ -13,34 +13,43 @@ func newMapMapper(dataType reflect.Type, normalizedType reflect.Type, names []st
         normalizedType: normalizedType,
     }
 
+    for fieldIndex, fieldName := range names {
+        m.fields[NameMapper(fieldName)] = &mapperField{
+            id:        fieldIndex,
+            convert:   Convert,
+            reverseId: -1,
+        }
+    }
+
     m.mapperTypeI = &m
     return mapperType(m)
 }
 
 // creates a new instance of map of required type.
 func (m *MapMapper) create() (reflect.Value, error) {
-    //mapS := len(m.fields)
-    //
-    //if arrLen == 0 {
-    //    return reflect.Value{}, errors.New("Can't get length of a new slice to create.")
-    //}
-    //
-    //return reflect.MakeSlice(m.dataType, arrLen, arrLen), nil
-   return reflect.MakeMap(m.dataType), nil
+    return reflect.MakeMap(m.dataType), nil
 }
 
-// sets a value to a map at i index
-func (m *MapMapper) set(to reflect.Value, i int, value reflect.Value) {
-    //if i < to.Len() {
-    //    to.MapIndex(i).Set(value)
-    //}
+// sets a value to a map at index with name
+func (m *MapMapper) set(to reflect.Value, i int, name string, value reflect.Value) {
+    name = NameMapper(name)
+    if _, ok := m.fields[name]; ok {
+        to.SetMapIndex(reflect.ValueOf(name), value)
+    }
 }
 
-// gets a value from a map at i index
-func (m *MapMapper) get(from reflect.Value, i int) (reflect.Value) {
-    //if i < from.Len() {
-    //    return from.MapIndex(i)
-    //}
+// gets a value from a map at index with name
+func (m *MapMapper) get(from reflect.Value, i int, name string) (reflect.Value) {
+    name = NameMapper(name)
+    if _, ok := m.fields[name]; ok {
+        v := from.MapIndex(reflect.ValueOf(name))
+
+        if !v.IsValid() {
+            v = reflect.Zero(m.dataType.Elem())
+        }
+
+        return v
+    }
 
     return reflect.Value{}
 }

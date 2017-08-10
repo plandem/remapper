@@ -42,6 +42,8 @@ func TestStructMapper(t *testing.T) {
 
     mapper = newStructMapper(dataType, dataNormalizedType)
     testStructMethods(t, mapper, pDataVal)
+
+    //typed struct is possible, so no tests for it
 }
 
 func testStructMethods(t *testing.T, mapper mapperType, target reflect.Value) {
@@ -49,25 +51,5 @@ func testStructMethods(t *testing.T, mapper mapperType, target reflect.Value) {
     require.IsType(t, mapperType{}, mapper)
     require.IsType(t, &StructMapper{}, mapper.mapperTypeI)
 
-    testMapperIcreate(t, mapper)
-
-    testMapperIget(t, mapper, target, 0, int(0))
-    testMapperIset(t, mapper, target, 0, int(-1))
-    testMapperIget(t, mapper, target, 0, int(-1))
-
-    testMapperIget(t, mapper, target, 1, uint(0))
-    testMapperIset(t, mapper, target, 1, uint(100))
-    testMapperIget(t, mapper, target, 1, uint(100))
-
-    testMapperIget(t, mapper, target, 2, "")
-    testMapperIset(t, mapper, target, 2, "test string")
-    testMapperIget(t, mapper, target, 2, "test string")
-
-    testMapperIget(t, mapper, target, 3, 0.0)
-    testMapperIset(t, mapper, target, 3, 1.2345)
-    testMapperIget(t, mapper, target, 3, 1.2345)
-
-    testMapperIget(t, mapper, target, 4, false)
-    testMapperIset(t, mapper, target, 4, true)
-    testMapperIget(t, mapper, target, 4, true)
+    testMapperIuntyped(t, mapper, target)
 }

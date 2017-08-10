@@ -39,7 +39,9 @@ func (m *Mapper) getType(target interface{}) (*mapperType, error) {
 // Set value at target object for field with fieldName or return error if field was not mapped or value could not be converted
 func (m *Mapper) SetByName(target interface{}, fieldName string, value interface{}) (error) {
     if targetType, err := m.getType(target); err == nil {
-        if field, ok := targetType.fields[NameMapper(fieldName)]; !ok {
+        fieldName := NameMapper(fieldName)
+
+        if field, ok := targetType.fields[fieldName]; !ok {
             return unknownFieldName(fieldName)
         } else {
             value := reflect.ValueOf(value)
@@ -51,7 +53,7 @@ func (m *Mapper) SetByName(target interface{}, fieldName string, value interface
             }
 
             target = reflect.Indirect(target)
-            targetType.set(target, field.id, value)
+            targetType.set(target, field.id, fieldName, value)
             return nil
         }
     } else {
@@ -62,10 +64,11 @@ func (m *Mapper) SetByName(target interface{}, fieldName string, value interface
 // Get value from target object for field with fieldName or return error if field was not mapped
 func (m *Mapper) GetByName(target interface{}, fieldName string) (interface{}, error) {
     if targetType, err := m.getType(target); err == nil {
-        if field, ok := targetType.fields[NameMapper(fieldName)]; !ok {
+        fieldName := NameMapper(fieldName)
+        if field, ok := targetType.fields[fieldName]; !ok {
             return nil, unknownFieldName(fieldName)
         } else {
-            return targetType.get(reflect.ValueOf(target), field.id).Interface(), nil
+            return targetType.get(reflect.ValueOf(target), field.id, fieldName).Interface(), nil
         }
     } else {
         return nil, err
@@ -76,18 +79,8 @@ func (m *Mapper) GetByName(target interface{}, fieldName string) (interface{}, e
 func (m *Mapper) NameByName(from interface{}, fieldName string) (string, error) {
     if fromType, err := m.getType(from); err == nil {
         if field, ok := fromType.fields[NameMapper(fieldName)]; ok {
-            var toType *mapperType
-
-            if fromType == m.types[0] {
-                toType = m.types[1]
-            } else {
-                toType = m.types[0]
-            }
-
-            for reverseFieldName, reverseField := range toType.fields {
-                if reverseField.id == field.reverseId {
-                    return reverseFieldName, nil
-                }
+            if field.reverseId > 0 && len(field.reverseName) > 0 {
+                return field.reverseName, nil
             }
         }
     }
@@ -120,12 +113,12 @@ func (m *Mapper) Map(from interface{}) (interface{}, error) {
                 continue
             }
 
-            fromFieldVal := fromType.get(fromVal, field.reverseId)
+            fromFieldVal := fromType.get(fromVal, field.reverseId, field.reverseName)
             if !fromFieldVal.IsValid() {
                 continue
             }
 
-            toFieldVal := toType.get(toVal, field.id)
+            toFieldVal := toType.get(toVal, field.id, fieldName)
 
             if val, err := field.convert(fromFieldVal, toFieldVal.Type()); err != nil {
                 return nil, errors.New(fmt.Sprintf("Could not convert '%s'. %s", fieldName, err.Error()))

@@ -1,9 +1,10 @@
 package remapper_test
 
 import (
-    "github.com/plandem/remapper"
     "log"
     "fmt"
+
+    "github.com/plandem/remapper"
 )
 
 func ExampleMapper() {
@@ -111,13 +112,13 @@ func Example_namedSliceAndStructWithCustomTags() {
         BoolVal  bool       `db:"bool_val"`
     }
 
-    mapper, err := remapper.New(&MyStruct{}, []string{}, "db", []string{
+    mapper, err := remapper.New(&MyStruct{}, remapper.Slice([]string{}, []string{
         "int_val",
         "uint_val",
         "str_val",
         "float_val",
         "bool_val",
-    })
+    }), "db")
 
     if err != nil {
         panic(err)
@@ -152,18 +153,18 @@ func Example_namedSliceAndStructWithoutTags() {
         BoolVal  bool
     }
 
-    mapper, err := remapper.New(&MyStruct{}, []string{}, map[string]string{
-        "IntVal":   "int_val",
-        "UintVal":  "uint_val",
-        "StrVal":   "str_val",
-        "FloatVal": "float_val",
-        "BoolVal":  "bool_val",
-    }, []string{
+    mapper, err := remapper.New(&MyStruct{}, remapper.Slice([]string{}, []string{
         "int_val",
         "uint_val",
         "str_val",
         "float_val",
         "bool_val",
+    }), map[string]string{
+        "IntVal":   "int_val",
+        "UintVal":  "uint_val",
+        "StrVal":   "str_val",
+        "FloatVal": "float_val",
+        "BoolVal":  "bool_val",
     })
 
     if err != nil {

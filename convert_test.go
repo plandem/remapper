@@ -1,10 +1,12 @@
-package remapper
+package remapper_test
 
 import (
     "testing"
     "reflect"
     "github.com/stretchr/testify/require"
     "github.com/stretchr/testify/assert"
+
+    "github.com/plandem/remapper"
 )
 
 var (
@@ -355,7 +357,7 @@ func TestConverterBool(t *testing.T) {
 }
 
 func testConverter(t *testing.T, from interface{}, toType reflect.Type, result interface{}, hasError bool) {
-    to, err := Convert(reflect.ValueOf(from), toType)
+    to, err := remapper.Convert(reflect.ValueOf(from), toType)
 
     if hasError {
         require.NotNil(t, err)

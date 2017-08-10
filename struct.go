@@ -33,12 +33,12 @@ func (m *StructMapper) create() (reflect.Value, error) {
 }
 
 // sets a value to a field of struct with i index
-func (m *StructMapper) set(to reflect.Value, i int, value reflect.Value) {
+func (m *StructMapper) set(to reflect.Value, i int, name string, value reflect.Value) {
     to.Field(i).Set(value)
 }
 
 // gets a value from field of struct with i index
-func (m *StructMapper) get(from reflect.Value, i int) (reflect.Value) {
+func (m *StructMapper) get(from reflect.Value, i int, name string) (reflect.Value) {
     return from.Field(i)
 }
 

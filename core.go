@@ -17,9 +17,9 @@ var (
 )
 
 type mapperTypeI interface {
-    create() (reflect.Value, error)                   //Create a new data of required type
-    set(to reflect.Value, i int, value reflect.Value) //Set value to
-    get(from reflect.Value, i int) (reflect.Value)    //Get value from
+    create() (reflect.Value, error)                                //Create a new data of required type
+    set(to reflect.Value, i int, name string, value reflect.Value) //Set value to
+    get(from reflect.Value, i int, name string) (reflect.Value)    //Get value from
 }
 
 type mapperType struct {
@@ -72,11 +72,15 @@ func resolveMappingField(fromType *mapperType, from string, toType *mapperType, 
         if toFieldId, err := strconv.ParseInt(toFieldName, 10, 32); err == nil {
             fromField.reverseId = int(toFieldId)
         } else {
-            if toField, ok := toType.fields[NameMapper(toFieldName)]; !ok {
+            toFieldName := NameMapper(toFieldName)
+            if toField, ok := toType.fields[toFieldName]; !ok {
                 return errors.New(fmt.Sprintf("There is no field with name '%s' at %v", toFieldName, toType.normalizedType))
             } else {
                 fromField.reverseId = int(toField.id)
+                fromField.reverseName = toFieldName
+
                 toField.reverseId = fromField.id
+                toField.reverseName = fromFieldName
                 toField.resolveOptions(options)
             }
         }

@@ -8,6 +8,9 @@ type mapperField struct {
     // Reverse ID of field
     reverseId int
 
+    // Reverse Name of field
+    reverseName string
+
     // Ignore or not field. It's a normal to have linked fields that must not be mapped.
     // E.g.: you have field that must not be mapped, but you would like to get value manually via 'GetByName'
     //

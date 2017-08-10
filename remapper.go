@@ -87,8 +87,16 @@ func Map(t interface{}, names []string)(option) {
 
         if err == nil {
             mapType := reflect.TypeOf(t)
-            mapMapper := newMapMapper(mapType, normalizedType, names)
-            err = m.setType(&mapMapper)
+            if len(names) > 0 {
+                if mapType.Elem().Kind() == reflect.Interface {
+                    err = errors.New("You map to/from typed map only.")
+                } else {
+                    mapMapper := newMapMapper(mapType, normalizedType, names)
+                    err = m.setType(&mapMapper)
+                }
+            } else {
+                err = errors.New("You must provide names for mapping to/from map.")
+            }
         }
 
         return err
@@ -122,16 +130,18 @@ func resolveTypeMapper(t interface{})(option, error) {
 
     switch normalizedType.Kind() {
     case reflect.Slice:
+        //TODO: get names from 't'?
         return Slice(t, nil), nil
     case reflect.Struct:
         return Struct(t), nil
     case reflect.Map:
+        //TODO: get names from 't'?
         return Map(t, nil), nil
     case reflect.Func:
-        if type1Option, ok := t.(option); !ok {
+        if typeOption, ok := t.(option); !ok {
             return nil, invalidFuncOption
         } else {
-            return type1Option, nil
+            return typeOption, nil
         }
     }
 

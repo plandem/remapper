@@ -53,27 +53,7 @@ func testTypedSliceMethods(t *testing.T, mapper mapperType, target reflect.Value
     require.IsType(t, mapperType{}, mapper)
     require.IsType(t, &SliceMapper{}, mapper.mapperTypeI)
 
-    testMapperIcreate(t, mapper)
-
-    testMapperIget(t, mapper, target, 0, "")
-    testMapperIset(t, mapper, target, 0, "-1")
-    testMapperIget(t, mapper, target, 0, "-1")
-
-    testMapperIget(t, mapper, target, 1, "")
-    testMapperIset(t, mapper, target, 1, "100")
-    testMapperIget(t, mapper, target, 1, "100")
-
-    testMapperIget(t, mapper, target, 2, "")
-    testMapperIset(t, mapper, target, 2, "test string")
-    testMapperIget(t, mapper, target, 2, "test string")
-
-    testMapperIget(t, mapper, target, 3, "")
-    testMapperIset(t, mapper, target, 3, "1.2345")
-    testMapperIget(t, mapper, target, 3, "1.2345")
-
-    testMapperIget(t, mapper, target, 4, "")
-    testMapperIset(t, mapper, target, 4, "true")
-    testMapperIget(t, mapper, target, 4, "true")
+    testMapperItyped(t, mapper, target)
 }
 
 func testUntypedSliceMethods(t *testing.T, mapper mapperType, target reflect.Value) {
@@ -81,25 +61,5 @@ func testUntypedSliceMethods(t *testing.T, mapper mapperType, target reflect.Val
     require.IsType(t, mapperType{}, mapper)
     require.IsType(t, &SliceMapper{}, mapper.mapperTypeI)
 
-    testMapperIcreate(t, mapper)
-
-    testMapperIget(t, mapper, target, 0, int(0))
-    testMapperIset(t, mapper, target, 0, int(-1))
-    testMapperIget(t, mapper, target, 0, int(-1))
-
-    testMapperIget(t, mapper, target, 1, uint(0))
-    testMapperIset(t, mapper, target, 1, uint(100))
-    testMapperIget(t, mapper, target, 1, uint(100))
-
-    testMapperIget(t, mapper, target, 2, "")
-    testMapperIset(t, mapper, target, 2, "test string")
-    testMapperIget(t, mapper, target, 2, "test string")
-
-    testMapperIget(t, mapper, target, 3, 0.0)
-    testMapperIset(t, mapper, target, 3, 1.2345)
-    testMapperIget(t, mapper, target, 3, 1.2345)
-
-    testMapperIget(t, mapper, target, 4, false)
-    testMapperIset(t, mapper, target, 4, true)
-    testMapperIget(t, mapper, target, 4, true)
+    testMapperIuntyped(t, mapper, target)
 }
